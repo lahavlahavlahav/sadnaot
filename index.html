@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="סדנאות פיסול ספרים של להב ברק (Lilou Books) למרכזים קהילתיים, מוסדות חינוך ועסקים: סדנת בוטיק, אגרטלי פרחים ודוכן יצירה.">
+<meta property="og:title" content="סדנאות פיסול ספרים | Lilou Books">
+<meta property="og:description" content="שלוש סדנאות פיסול ספרים מספרים נטושים שמקבלים חיים שניים. מחירים, תמונות ופרטים.">
+<meta property="og:image" content="https://sadnaot.liloubooks.com/img/boutique-group.jpg">
+<title>סדנאות פיסול ספרים | Lilou Books</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;600;700&display=swap">
+<style>
+  :root {
+    --paper: #FBF7F1;
+    --surface: #FFFFFF;
+    --sand: #F3EADD;
+    --ink: #2B231C;
+    --ink-soft: #5E5246;
+    --brown: #8A6338;
+    --brown-deep: #6E4C27;
+    --blush: #F4C6CC;
+    --blush-ink: #7A3C46;
+    --rule: #E5D9C7;
+    --olive: #55602F;
+    --olive-soft: #E7EAD6;
+    --edge-a: #EFE4D3;
+    --edge-b: #D9C7AE;
+    --shadow: 0 14px 34px -18px rgba(80, 55, 25, .35);
+    --display: "Frank Ruhl Libre", "David", "Times New Roman", serif;
+    --body: "Assistant", "Arial Hebrew", "Segoe UI", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #1C1814; --surface: #26201B; --sand: #2E2721;
+      --ink: #F2EADF; --ink-soft: #C9BCAC; --brown: #D9AE7C; --brown-deep: #E8C597;
+      --blush: #5A3239; --blush-ink: #F6CDD3; --rule: #3B332B;
+      --olive: #C2CF93; --olive-soft: #2C3120;
+      --edge-a: #2E2721; --edge-b: #4A3E31;
+      --shadow: 0 14px 34px -18px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #1C1814; --surface: #26201B; --sand: #2E2721;
+    --ink: #F2EADF; --ink-soft: #C9BCAC; --brown: #D9AE7C; --brown-deep: #E8C597;
+    --blush: #5A3239; --blush-ink: #F6CDD3; --rule: #3B332B;
+      --olive: #C2CF93; --olive-soft: #2C3120;
+    --edge-a: #2E2721; --edge-b: #4A3E31;
+    --shadow: 0 14px 34px -18px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    direction: rtl;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 19px;
+    line-height: 1.65;
+    padding-inline: 18px;
+    padding-block: 0 48px;
+  }
+  .wrap { max-width: 1080px; margin-inline: auto; }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+  p { margin: 0; }
+  img { display: block; max-width: 100%; }
+  a { color: var(--brown-deep); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--brown); outline-offset: 3px; border-radius: 6px; }
+
+  /* fore-edge of a book: the page motif */
+  .edge {
+    height: 14px; border-radius: 3px;
+    background: repeating-linear-gradient(90deg, var(--edge-a) 0 3px, var(--edge-b) 3px 4px);
+  }
+
+  .eyebrow {
+    font-size: 15px; font-weight: 700; letter-spacing: .08em; color: var(--brown);
+  }
+
+  /* hero */
+  .hero { display: grid; gap: 32px; padding-block: 40px 36px; grid-template-columns: 1.05fr .95fr; align-items: center; }
+  .hero h1 { font-size: clamp(38px, 6vw, 62px); font-weight: 900; margin-block: 10px 18px; }
+  .hero h1 span { color: var(--brown); }
+  .hero .lead { font-size: 21px; color: var(--ink-soft); max-width: 34ch; }
+  .hero-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero-photos img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; box-shadow: var(--shadow); }
+  .hero-photos .tall { grid-row: span 2; aspect-ratio: 3 / 4.6; }
+  .hero-photos .sq { aspect-ratio: 1 / 1.08; }
+  .by { margin-top: 22px; font-size: 17px; color: var(--ink-soft); }
+  .by strong { color: var(--ink); }
+
+  /* chooser */
+  section { padding-block: 40px; }
+  .sec-head { display: grid; gap: 6px; margin-bottom: 22px; }
+  .sec-head h2 { font-size: clamp(30px, 4.2vw, 42px); font-weight: 700; }
+  .sec-head p { color: var(--ink-soft); max-width: 60ch; }
+
+  .chooser { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pick {
+    display: grid; grid-template-rows: auto 1fr; text-decoration: none; color: inherit;
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .pick:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  @media (prefers-reduced-motion: reduce) { .pick { transition: none; } .pick:hover { transform: none; } }
+  .pick img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .pick-body { padding: 18px 20px 20px; display: grid; gap: 8px; align-content: start; }
+  .pick h3 { font-size: 25px; }
+  .pick .for { color: var(--ink-soft); font-size: 17px; }
+  .pick .price { margin-top: 6px; font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--brown-deep); }
+  .pick .price small { font-family: var(--body); font-size: 15px; font-weight: 600; color: var(--ink-soft); }
+  .pick .go { margin-top: 4px; font-weight: 700; color: var(--brown); font-size: 17px; }
+
+  /* comparison table */
+  .table-box { overflow-x: auto; border: 1px solid var(--rule); border-radius: 16px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 18px; }
+  th, td { text-align: right; padding: 16px 18px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { background: var(--sand); font-size: 16px; color: var(--ink-soft); font-weight: 700; }
+  tbody th { font-family: var(--display); font-size: 21px; font-weight: 700; }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--brown-deep); white-space: nowrap; }
+
+  /* workshop sections */
+  .ws { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; padding-block: 44px; }
+  .ws + .ws { border-top: 1px solid var(--rule); }
+  .ws-tag {
+    display: inline-block; justify-self: start; padding: 4px 14px; border-radius: 999px;
+    background: var(--blush); color: var(--blush-ink); font-weight: 700; font-size: 15px;
+  }
+  .ws-text { display: grid; gap: 16px; }
+  .ws-text h2 { font-size: clamp(32px, 4.4vw, 44px); font-weight: 900; }
+  .ws-text .desc { font-size: 20px; max-width: 46ch; }
+
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+  .fact { background: var(--sand); border-radius: 12px; padding: 12px 16px; }
+  .fact dt { font-size: 15px; color: var(--ink-soft); font-weight: 600; }
+  .fact dd { margin: 0; font-weight: 700; font-size: 19px; }
+
+  .price-box {
+    display: grid; gap: 4px; padding: 18px 22px; border-radius: 14px;
+    border: 2px solid var(--brown); background: var(--surface);
+  }
+  .price-box .label { font-size: 15px; font-weight: 700; color: var(--brown); }
+  .price-box .amount { font-family: var(--display); font-size: clamp(32px, 4.6vw, 42px); font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .price-box .note { color: var(--ink-soft); font-size: 17px; }
+
+  .ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .ticks li { position: relative; padding-inline-start: 30px; }
+  .ticks li::before {
+    content: ""; position: absolute; inset-inline-start: 0; top: .45em; width: 18px; height: 11px;
+    background: repeating-linear-gradient(90deg, var(--brown) 0 2px, transparent 2px 4px); border-radius: 2px;
+  }
+
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gallery img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+  .gallery .big { grid-column: span 2; aspect-ratio: 4 / 3.3; }
+  .gallery .small { aspect-ratio: 1 / 1.15; }
+  .ws.flip .gallery { order: 2; }
+
+  /* second life / green */
+  .green-pill {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
+    padding: 6px 16px; border-radius: 999px; background: var(--olive-soft); color: var(--olive);
+    font-weight: 700; font-size: 17px;
+  }
+  .green-pill::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--olive); }
+  .second-life { background: var(--olive-soft); border-radius: 20px; padding: 32px 30px; display: grid; gap: 24px; }
+  .second-life .eyebrow { color: var(--olive); }
+  .second-life h2 { font-size: clamp(30px, 4.2vw, 42px); font-weight: 900; color: var(--ink); }
+  .second-life .intro { font-size: 20px; max-width: 60ch; }
+  .life-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; counter-reset: step; }
+  .life-steps li { background: var(--surface); border-radius: 14px; padding: 18px 20px; display: grid; gap: 4px; align-content: start; counter-increment: step; }
+  .life-steps li::before {
+    content: counter(step); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--olive); color: var(--surface); font-weight: 700; margin-bottom: 6px;
+  }
+  .life-steps strong { font-family: var(--display); font-size: 22px; }
+  .life-steps span { color: var(--ink-soft); font-size: 17px; }
+  @media (max-width: 860px) { .life-steps { grid-template-columns: 1fr; } }
+
+  /* all-inclusive band */
+  .included {
+    display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center;
+    background: var(--sand); border-radius: 18px; padding: 26px 28px;
+  }
+  .included .book {
+    width: 72px; height: 72px; border-radius: 12px;
+    background: repeating-linear-gradient(90deg, var(--edge-a) 0 3px, var(--edge-b) 3px 5px);
+    border: 3px solid var(--brown);
+  }
+  .included h2 { font-size: clamp(26px, 3.6vw, 34px); margin-bottom: 6px; }
+  .included p { color: var(--ink-soft); max-width: 62ch; }
+
+  /* suppliers */
+  .clients { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; list-style: none; padding: 0; margin: 0; }
+  .clients li {
+    display: grid; gap: 2px; padding: 16px 18px; border-radius: 14px; background: var(--surface); border: 1px solid var(--rule);
+  }
+  .clients .place { font-family: var(--display); font-size: 23px; font-weight: 700; }
+  .clients .kind { font-size: 16px; color: var(--ink-soft); }
+  .clients-photo { margin-top: 16px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+  .clients-photo img { width: 100%; height: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 14px; }
+
+  /* contact */
+  .contact {
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    background: var(--ink); color: var(--paper); border-radius: 20px; padding: 32px;
+  }
+  .contact h2 { font-size: clamp(28px, 4vw, 40px); }
+  .contact p { color: var(--paper); opacity: .85; margin-top: 8px; max-width: 46ch; }
+  .contact-lines { display: grid; gap: 10px; }
+  .line { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .line .k { font-size: 15px; opacity: .75; min-width: 72px; }
+  .line .v { font-size: 22px; font-weight: 700; direction: ltr; unicode-bidi: isolate; user-select: all; }
+  .copy {
+    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: transparent; color: var(--paper); border: 1px solid currentColor; border-radius: 999px; padding: 4px 14px;
+  }
+  .contact a { color: var(--paper); }
+
+  footer { text-align: center; color: var(--ink-soft); font-size: 15px; padding-top: 26px; }
+
+  @media (max-width: 860px) {
+    .hero, .ws { grid-template-columns: 1fr; }
+    .ws.flip .gallery { order: 0; }
+    .chooser { grid-template-columns: 1fr; }
+    .pick { grid-template-columns: 40% 1fr; grid-template-rows: none; }
+    .pick img { height: 100%; aspect-ratio: auto; }
+    .contact { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    body { font-size: 18px; }
+    .pick { grid-template-columns: 1fr; }
+    .pick img { aspect-ratio: 16 / 10; }
+    .facts { grid-template-columns: 1fr 1fr; }
+    .included { grid-template-columns: 1fr; }
+    .clients-photo { grid-template-columns: 1fr; }
+    .contact { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">LILOU BOOKS · סדנאות פיסול ספרים</div>
+      <h1>סדנאות פיסול ספרים <span>למרכזים קהילתיים, מוסדות ועסקים</span></h1>
+      <p class="lead">מקפלים דפים של ספרים נטושים, שנזרקו או נשכחו, והופכים אותם ליצירת אמנות. שלוש סדנאות, לכל סוג של אירוע וקהל. בכולן אני מביאה את כל הספרים והציוד.</p>
+      <span class="green-pill">פעילות ירוקה: כל ספר מקבל חיים שניים</span>
+      <p class="by"><strong>להב ברק</strong>, אמנית פיסול ספרים</p>
+    </div>
+    <div class="hero-photos">
+      <img class="tall" src="img/boutique-group.jpg" alt="משתתפות בסדנת פיסול ספרים עובדות סביב שולחן ארוך">
+      <img class="sq" src="img/heart.jpg" alt="ספר מפוסל בצורת לב בתוך לב">
+      <img class="sq" src="img/vase-kids.jpg" alt="ילדים מציגים אגרטלי ספרים עם פרחים שהכינו">
+    </div>
+  </header>
+
+  <div class="edge" aria-hidden="true"></div>
+
+  <section id="choose">
+    <div class="sec-head">
+      <div class="eyebrow">איזו סדנה מתאימה לכם?</div>
+      <h2>שלוש סדנאות במבט אחד</h2>
+      <p>לחצו על סדנה כדי לראות תמונות ופרטים מלאים.</p>
+    </div>
+    <div class="chooser">
+      <a class="pick" href="#boutique">
+        <img src="img/art-name.jpg" alt="ספר מפוסל עם מילים בעברית">
+        <div class="pick-body">
+          <h3>סדנת בוטיק</h3>
+          <p class="for">סדנת עומק של 3 שעות למבוגרים. כל משתתף יוצא עם יצירה מוגמרת.</p>
+          <p class="price">180 ₪ <small>למשתתף</small></p>
+          <span class="go">לפרטים ←</span>
+        </div>
+      </a>
+      <a class="pick" href="#vases">
+        <img src="img/vase-flowers.jpg" alt="אגרטל מספר ממוחזר עם פרחים לבנים">
+        <div class="pick-body">
+          <h3>סדנת אגרטלי פרחים</h3>
+          <p class="for">סדנה קלילה להורים וילדים, לחג או לאירוע. 50 עד 100 משתתפים.</p>
+          <p class="price">2,500–4,000 ₪ <small>לסדנה</small></p>
+          <span class="go">לפרטים ←</span>
+        </div>
+      </a>
+      <a class="pick" href="#stand">
+        <img src="img/stand-setup.jpg" alt="עמדת פיסול ספרים מוכנה לאירוע">
+        <div class="pick-body">
+          <h3>דוכן יצירה</h3>
+          <p class="for">עמדה פתוחה בפסטיבל או ביריד. עוברי אורח יוצרים עבודה קטנה תוך 10–15 דקות.</p>
+          <p class="price">2,500 ₪ <small>לשעתיים</small></p>
+          <span class="go">לפרטים ←</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="green" aria-labelledby="green-title">
+    <div class="second-life">
+      <div class="sec-head" style="margin:0">
+        <div class="eyebrow">יצירה מקיימת</div>
+        <h2 id="green-title">ספרים שנזרקו מקבלים חיים שניים</h2>
+        <p class="intro">כל הספרים בסדנאות הם ספרים נטושים: ספרים שהושארו ברחוב, נזרקו לפח המיחזור או נשכחו במחסן. במקום שייגמרו כפסולת, אני אוספת אותם ומביאה אותם לסדנה. כך כל משתתף לוקח חלק בפעילות ירוקה, ויוצא עם יצירה שנולדה מחומר ממוחזר.</p>
+      </div>
+      <ol class="life-steps">
+        <li><strong>ספר נזרק</strong><span>ספרים ישנים שאף אחד כבר לא קורא, בדרך לפסולת.</span></li>
+        <li><strong>אני אוספת אותו</strong><span>מצילה ספרים נטושים ומכינה אותם לסדנה.</span></li>
+        <li><strong>הוא הופך ליצירה</strong><span>המשתתפים מקפלים את הדפים ולוקחים הביתה יצירת אמנות.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="compare" aria-labelledby="compare-title">
+    <div class="sec-head">
+      <h2 id="compare-title">השוואה מהירה</h2>
+    </div>
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr><th scope="col">סדנה</th><th scope="col">למי מתאים</th><th scope="col">משך</th><th scope="col">כמות משתתפים</th><th scope="col">מחיר</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">סדנת בוטיק</th><td>מבוגרים, ללא ניסיון קודם</td><td>3 שעות</td><td>15–25</td><td class="num">180 ₪ למשתתף</td></tr>
+          <tr><th scope="row">אגרטלי פרחים</th><td>הורים וילדים, חגים ואירועים</td><td>שעה עד שעה וחצי</td><td>50–100</td><td class="num">2,500–4,000 ₪</td></tr>
+          <tr><th scope="row">דוכן יצירה</th><td>קהל רחב בפסטיבלים, ירידים ואירועי חוץ</td><td>שעתיים</td><td>עוברים ושבים</td><td class="num">2,500 ₪</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="edge" aria-hidden="true"></div>
+
+  <!-- Boutique -->
+  <article class="ws" id="boutique">
+    <div class="gallery">
+      <img class="big" src="img/boutique-hall.jpg" alt="קבוצת משתתפות בסדנת בוטיק במרכז קהילתי">
+      <img class="small" src="img/boutique-hands.jpg" alt="ידיים מקפלות דפים של ספר">
+      <img class="small" src="img/art-letters.jpg" alt="ספר מפוסל עם אותיות">
+    </div>
+    <div class="ws-text">
+      <span class="ws-tag">סדנת עומק</span>
+      <h2>סדנת בוטיק בפיסול ספרים</h2>
+      <p class="desc">שלוש שעות של עבודה מעשית ורקע תאורטי. המשתתפים לומדים את הטכניקה, מתנסים בעצמם ויוצאים הביתה עם יצירה מוגמרת. אין צורך בניסיון או ברקע באמנות. מספיקות סבלנות ואהבה לעבודת ידיים.</p>
+      <dl class="facts">
+        <div class="fact"><dt>משך</dt><dd>3 שעות</dd></div>
+        <div class="fact"><dt>משתתפים</dt><dd>15–25</dd></div>
+        <div class="fact"><dt>קהל</dt><dd>מבוגרים</dd></div>
+        <div class="fact"><dt>ניסיון קודם</dt><dd>לא נדרש</dd></div>
+      </dl>
+      <div class="price-box">
+        <span class="label">מחיר</span>
+        <span class="amount">180 ₪ למשתתף</span>
+        <span class="note">לרוב המרכז מסבסד חלק מהמחיר, והמשתתף משלם את השאר.</span>
+      </div>
+      <ul class="ticks">
+        <li>חלק מעשי וחלק תאורטי</li>
+        <li>כל משתתף יוצא עם יצירה מוגמרת</li>
+        <li>ספרים נטושים שמקבלים חיים שניים, וכל הציוד כלול</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- Vases -->
+  <article class="ws flip" id="vases">
+    <div class="gallery">
+      <img class="big" src="img/vase-kids.jpg" alt="ילדים מציגים את אגרטלי הספרים שיצרו">
+      <img class="small" src="img/vase-table.jpg" alt="משתתפת ליד אגרטלי ספרים עם פרחים">
+      <img class="small" src="img/vase-wall.jpg" alt="אגרטל מספר מפוסל עם פרחים יבשים">
+    </div>
+    <div class="ws-text">
+      <span class="ws-tag">להורים וילדים</span>
+      <h2>סדנת אגרטלי פרחים</h2>
+      <p class="desc">סדנה חד־פעמית, כיפית וקלילה, שמתאימה לחג או לאירוע להורים וילדים. כל משתתף יוצר אגרטל מספר ממוחזר ומשלב בו פרחים. היא מתאימה גם למי שמעולם לא יצר, והתוצאה מרשימה.</p>
+      <dl class="facts">
+        <div class="fact"><dt>משך</dt><dd>שעה עד שעה וחצי</dd></div>
+        <div class="fact"><dt>משתתפים</dt><dd>50–100</dd></div>
+        <div class="fact"><dt>קהל</dt><dd>הורים וילדים</dd></div>
+        <div class="fact"><dt>רמה</dt><dd>למתחילים</dd></div>
+      </dl>
+      <div class="price-box">
+        <span class="label">מחיר לסדנה</span>
+        <span class="amount">2,500–4,000 ₪</span>
+        <span class="note">המחיר נקבע לפי מספר המשתתפים.</span>
+      </div>
+      <ul class="ticks">
+        <li>כל משתתף יוצא עם אגרטל ופרחים</li>
+        <li>מתאים לקבוצות גדולות</li>
+        <li>אגרטל מספר נטוש שקיבל חיים שניים. הספרים, הפרחים והציוד כלולים</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- Stand -->
+  <article class="ws" id="stand">
+    <div class="gallery">
+      <img class="big" src="img/stand-tables.jpg" alt="שולחנות עבודה ערוכים עם ספרים לפני אירוע">
+      <img class="small" src="img/stand-small.jpg" alt="עבודת פיסול ספרים קטנה מוצגת על מדף">
+      <img class="small" src="img/stand-setup.jpg" alt="דוכן עם עבודות להתרשמות">
+    </div>
+    <div class="ws-text">
+      <span class="ws-tag">לפסטיבלים וירידים</span>
+      <h2>דוכן יצירה</h2>
+      <p class="desc">אני מציבה בדוכן עבודות שלי להתרשמות, ומלמדת את עוברי האורח ליצור עבודה קלילה של 10–15 דקות. מגיעים לעמדה, יוצרים וממשיכים לטייל בין הדוכנים. כל משתתף לומד טכניקה חדשה ולוקח הביתה את מה שיצר.</p>
+      <dl class="facts">
+        <div class="fact"><dt>משך הפעילות</dt><dd>שעתיים</dd></div>
+        <div class="fact"><dt>זמן לכל משתתף</dt><dd>10–15 דקות</dd></div>
+        <div class="fact"><dt>קהל</dt><dd>כל הגילאים</dd></div>
+        <div class="fact"><dt>הרשמה</dt><dd>לא נדרשת</dd></div>
+      </dl>
+      <div class="price-box">
+        <span class="label">מחיר</span>
+        <span class="amount">2,500 ₪ לשעתיים</span>
+        <span class="note">כולל תערוכה קטנה של עבודות להתרשמות.</span>
+      </div>
+      <ul class="ticks">
+        <li>פעילות נעימה שלא דורשת הרשמה מראש</li>
+        <li>כל משתתף לוקח הביתה את מה שיצר</li>
+        <li>ספרים נטושים שמקבלים חיים שניים, וכל הציוד כלול</li>
+      </ul>
+    </div>
+  </article>
+
+  <section>
+    <div class="included">
+      <div class="book" aria-hidden="true"></div>
+      <div>
+        <h2>אתם מביאים את הקהל, אני מביאה את כל השאר</h2>
+        <p>בכל שלוש הסדנאות אני דואגת לכל הספרים ולכל הציוד הנדרש. הספרים הם ספרים נטושים שאספתי, כך שלא קונים שום דבר חדש. אין צורך להכין דבר מראש.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="edge" aria-hidden="true"></div>
+
+  <section id="clients" aria-labelledby="clients-title">
+    <div class="sec-head">
+      <div class="eyebrow">כבר עובדים איתי</div>
+      <h2 id="clients-title">אני כבר ספקית של</h2>
+    </div>
+    <ul class="clients">
+      <li><span class="place">תל אביב</span><span class="kind">מוסדות חינוך</span></li>
+      <li><span class="place">רמת גן</span><span class="kind">מוסדות חינוך</span></li>
+      <li><span class="place">גבעתיים</span><span class="kind">מוסדות חינוך</span></li>
+      <li><span class="place">פתח תקווה</span><span class="kind">מוסדות חינוך</span></li>
+      <li><span class="place">שוהם</span><span class="kind">מוסדות חינוך</span></li>
+      <li><span class="place">רחובות</span><span class="kind">מוסדות חינוך</span></li>
+      <li><span class="place">מלונות דן</span><span class="kind">רשת מלונות</span></li>
+    </ul>
+    <div class="clients-photo">
+      <img src="img/library.jpg" alt="סדנת פיסול ספרים בספרייה של מרכז קהילתי">
+      <img src="img/art-dedication.jpg" alt="ספר מפוסל עם הקדשה אישית">
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="contact">
+      <div>
+        <h2>רוצים לקבוע סדנה?</h2>
+        <p>כתבו לי או התקשרו, ספרו לי על האירוע ועל הקהל, ואשלח הצעת מחיר מותאמת.</p>
+      </div>
+      <div class="contact-lines">
+        <div class="line">
+          <span class="k">טלפון</span>
+          <a class="v" id="phone" href="tel:+972502534643">050-2534643</a>
+          <button class="copy" type="button" data-copy="phone">העתקה</button>
+        </div>
+        <div class="line">
+          <span class="k">וואטסאפ</span>
+          <a class="v" href="https://wa.me/972502534643" target="_blank" rel="noopener">שליחת הודעה</a>
+        </div>
+        <div class="line">
+          <span class="k">אתר</span>
+          <a class="v" href="https://liloubooks.com" target="_blank" rel="noopener">liloubooks.com</a>
+        </div>
+        <div class="line">
+          <span class="k">אינסטגרם</span>
+          <a class="v" href="https://instagram.com/lahav_barak" target="_blank" rel="noopener">@lahav_barak</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Lilou Books · להב ברק · סדנאות פיסול ספרים</footer>
+</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.dataset.copy);
+      var text = el.textContent.trim();
+      function selectIt() {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      }
+      try {
+        navigator.clipboard.writeText(text).then(function () {
+          btn.textContent = 'הועתק';
+          setTimeout(function () { btn.textContent = 'העתקה'; }, 1800);
+        }, selectIt);
+      } catch (e) { selectIt(); }
+    });
+  });
+</script>
+</body>
+</html>
