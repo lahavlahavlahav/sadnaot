@@ -204,7 +204,9 @@ export async function syncCalendar({ force = false } = {}) {
 
   const [ws, types] = await Promise.all([readCol("workshops"), readCol("types")]);
   const byGcal = new Map(ws.filter((w) => typeof w.gcalId === "string").map((w) => [w.gcalId, w]));
-  const prep = (types.find((t) => t.id === "open") || {}).prep || [];
+  // Workshops at home ("בבית") need only registration and marketing; others get the open-workshop list.
+  const prepOf = (typeId) => (types.find((t) => t.id === typeId) || types.find((t) => t.id === "open") || {}).prep || [];
+  const typeFor = (summary) => (/בבית/.test(summary) && types.some((t) => t.id === "home") ? "home" : "open");
   const ops = []; let created = 0, updated = 0, cancelled = 0; const seen = new Set();
   for (const e of events) {
     seen.add(e.uid);
@@ -212,10 +214,10 @@ export async function syncCalendar({ force = false } = {}) {
     if (!ex) {
       if (e.cancelled) continue;
       ops.push({ op: "set", col: "workshops", id: safeId(e.uid), data: {
-        title: e.summary, typeId: "open", status: e.date < today ? "done" : "confirmed", date: e.date, start: e.start, end: e.end,
+        title: e.summary, typeId: typeFor(e.summary), status: e.date < today ? "done" : "confirmed", date: e.date, start: e.start, end: e.end,
         place: e.location, address: "", participants: guessParticipants(e.summary, e.desc), capacity: null, contact: "", phone: "", price: "", link: "",
         notes: (e.desc ? "מהיומן: " + e.desc.replace(/\n/g, " / ") + " · " : "") + "נוסף אוטומטית מהיומן",
-        checklist: e.date < today ? [] : prep.map((t) => ({ t, d: false })), created: new Date().toISOString(), source: "gcal", gcalId: e.uid } });
+        checklist: e.date < today ? [] : prepOf(typeFor(e.summary)).map((t) => ({ t, d: false })), created: new Date().toISOString(), source: "gcal", gcalId: e.uid } });
       created++; continue;
     }
     const patch = {};
