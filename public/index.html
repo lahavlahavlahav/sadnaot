@@ -114,6 +114,25 @@ dialog::backdrop{background:rgba(20,15,10,.45)}
 .toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;font-weight:600;z-index:20}
 .banner{border-radius:10px;padding:10px 14px;background:var(--warn-soft);color:var(--warn)}
 .confirm{display:inline-flex;gap:6px;align-items:center}
+.mnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mnav h2{min-width:9ch;text-align:center}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:12px}
+.mdow{background:var(--bg);color:var(--muted);font-size:.78rem;font-weight:600;text-align:center;padding:6px 0}
+.mday{background:var(--surface);min-height:104px;padding:5px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.mday.blank{background:var(--bg)}
+.mday .dnum{font-size:.82rem;font-weight:700;color:var(--muted);align-self:flex-start;min-width:24px;height:24px;line-height:24px;text-align:center;border-radius:99px}
+.mday.today .dnum{background:var(--accent);color:var(--accent-ink)}
+.mev{display:block;width:100%;text-align:start;border:0;border-inline-start:3px solid var(--ok);border-radius:5px;padding:3px 6px;font-size:.78rem;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--accent-soft);color:var(--ink);cursor:pointer}
+.mev:hover{filter:brightness(.96)}
+.mev b{font-variant-numeric:tabular-nums;font-weight:700}
+.mev.st-tentative{border-inline-start-color:var(--warn)}
+.mev.st-done{opacity:.55}
+.mev.st-cancelled{opacity:.5;text-decoration:line-through}
+.mev.short{box-shadow:inset 0 0 0 1px var(--bad)}
+.tip{position:fixed;z-index:40;width:min(290px,calc(100vw - 24px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;box-shadow:0 10px 28px rgba(0,0,0,.18);font-size:.88rem;pointer-events:none;display:flex;flex-direction:column;gap:4px}
+.tip .tt{font-weight:700;font-size:.95rem}
+.tip .tm{color:var(--muted)}
+@media (max-width:560px){.mday{min-height:70px;padding:3px}.mev{font-size:.68rem;padding:2px 3px}.mev b{display:none}.mdow{font-size:.7rem}}
 .login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .login form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;width:min(360px,100%)}
 .login input{font-size:1rem;padding:10px 12px}
@@ -155,11 +174,12 @@ dialog::backdrop{background:rgba(20,15,10,.45)}
 <div class="login" id="login" hidden dir="rtl" lang="he"><form id="loginForm"><h2>לוח הסדנאות</h2><label for="pw" class="muted">סיסמה</label><input type="password" id="pw" autocomplete="current-password" required><div class="err" id="loginErr"></div><button class="btn primary" type="submit">כניסה</button></form></div>
 <dialog id="dlg"></dialog>
 <div class="toast" id="toast" hidden></div>
+<div class="tip" id="tip" hidden dir="rtl" lang="he"></div>
 
 <script>
 (function(){
 const STATUS={tentative:{l:'טנטטיבי',c:'warn'},confirmed:{l:'מאושר',c:'ok'},done:{l:'התקיימה',c:'neutral'},cancelled:{l:'בוטלה',c:'bad'}};
-const S={workshops:[],items:[],types:[],loaded:{w:false,i:false,t:false},tab:'workshops',filter:'upcoming',horizon:30,openId:null};
+const S={view:'list',month:null,workshops:[],items:[],types:[],loaded:{w:false,i:false,t:false},tab:'workshops',filter:'upcoming',horizon:30,openId:null};
 let db=null, pendingRender=false;
 const $=s=>document.querySelector(s);
 const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -244,7 +264,41 @@ function renderSummary(){
    <div><div class="k">פריטים חסרים ב־30 יום</div><div class="v num ${miss?'bad':'ok'}">${miss}</div><div class="s">${miss?'פרטים בלשונית "מה חסר"':'הציוד מספיק'}</div></div>`;
 }
 
+const viewToggle=()=>`<div class="seg" role="group" aria-label="תצוגה">${[['list','רשימה'],['month','לוח חודשי']].map(([k,l])=>`<button type="button" data-view="${k}" aria-pressed="${S.view===k}">${l}</button>`).join('')}</div>`;
+const HEB_DOW=['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+function renderMonth(v){
+  const ym=S.month||todayStr().slice(0,7);const [y,m]=ym.split('-').map(Number);
+  const first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),lead=first.getDay(),t=todayStr();
+  const alloc=allocation();const by={};
+  S.workshops.forEach(w=>{if(w.date&&w.date.slice(0,7)===ym)(by[w.date]=by[w.date]||[]).push(w)});
+  Object.values(by).forEach(a=>a.sort((a1,b1)=>String(a1.start||'').localeCompare(String(b1.start||''))));
+  const label=first.toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+  const count=Object.values(by).reduce((s1,a)=>s1+a.filter(w=>w.status!=='cancelled').length,0);
+  let html=`<div class="toolbar"><div class="mnav"><button class="btn sm" type="button" data-mnav="-1" aria-label="החודש הקודם">→</button><h2>${esc(label)}</h2><button class="btn sm" type="button" data-mnav="1" aria-label="החודש הבא">←</button>${ym!==t.slice(0,7)?'<button class="btn sm" type="button" data-mnav="0">היום</button>':''}<span class="muted num">${count} סדנאות</span></div>${viewToggle()}</div>
+  <div class="mgrid">${HEB_DOW.map(d=>`<div class="mdow">${d}</div>`).join('')}`;
+  for(let i=0;i<lead;i++)html+='<div class="mday blank"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=ym+'-'+String(d).padStart(2,'0');const list=by[ds]||[];
+    html+=`<div class="mday${ds===t?' today':''}"><span class="dnum num">${d}</span>${list.map(w=>{const sh=(alloc[w.id]||[]).some(r=>r.short>0);
+      return `<button type="button" class="mev st-${esc(w.status||'tentative')}${sh?' short':''}" data-open="${esc(w.id)}" data-tip="${esc(w.id)}"><b>${esc(w.start||'')}</b> ${esc(w.title||'סדנה')}</button>`}).join('')}</div>`;
+  }
+  const tail=(7-((lead+days)%7))%7;for(let i=0;i<tail;i++)html+='<div class="mday blank"></div>';
+  v.innerHTML=html+'</div><p class="muted" style="font-size:.85rem;margin-top:8px">מעבר עם העכבר מציג תקציר, ולחיצה פותחת את הסדנה. מסגרת אדומה: חסר ציוד.</p>';
+}
+function tipHtml(w){
+  const st=STATUS[w.status]||STATUS.tentative;const ty=typeOf(w);const p=checkProg(w);
+  const sh=(allocation()[w.id]||[]).filter(r=>r.short>0);
+  const open=(w.checklist||[]).filter(c=>c&&!c.d).map(c=>c.t);
+  return `<div class="tt">${esc(w.title||'סדנה')}</div>
+   <div class="tm">${esc(fmtDate(w.date))} · <span class="num">${esc(w.start||'')}${w.end?'–'+esc(w.end):''}</span></div>
+   ${w.place?`<div>📍 ${esc(w.place)}</div>`:''}
+   <div>${n(w.participants)}${w.capacity?' / '+n(w.capacity):''} משתתפים${ty?' · '+esc(ty.name):''}</div>
+   <div><span class="pill ${st.c}">${st.l}</span>${sh.length?` <span class="pill bad">חסרים ${sh.length} פריטים</span>`:''}${w.gcalMissing?' <span class="pill warn">לא נמצא ביומן</span>':''}</div>
+   ${p.total?`<div class="tm">הכנה ${p.done}/${p.total}${open.length&&w.status!=='done'?' · עוד: '+open.slice(0,2).map(esc).join(', ')+(open.length>2?'…':''):''}</div>`:''}
+   ${(w.threads||[]).length?`<div class="tm">✉ ${(w.threads||[]).length} התכתבויות</div>`:''}`;
+}
 function renderWorkshops(v){
+  if(S.view==='month'){renderMonth(v);return}
   const alloc=allocation();const t=todayStr();
   let ws=S.workshops.slice();
   if(S.filter==='upcoming')ws=ws.filter(w=>!w.date||w.date>=t).filter(w=>w.status!=='done');
@@ -253,7 +307,7 @@ function renderWorkshops(v){
   if(S.filter==='past')ws.reverse();
   let html=`<div class="toolbar"><div class="seg" role="group" aria-label="סינון">
     ${[['upcoming','קרובות'],['past','שהיו'],['all','הכול']].map(([k,l])=>`<button type="button" data-filter="${k}" aria-pressed="${S.filter===k}">${l}</button>`).join('')}
-  </div></div><div class="list" style="margin-top:12px">`;
+  </div>${viewToggle()}</div><div class="list" style="margin-top:12px">`;
   if(!ws.length)html+=`<div class="empty">${S.filter==='past'?'אין עדיין סדנאות שהתקיימו.':'אין סדנאות קרובות. לחצי "+ סדנה חדשה" כדי להוסיף את הראשונה.'}</div>`;
   let lastMonth='';
   ws.forEach(w=>{
@@ -338,7 +392,6 @@ function renderTypes(v){
     const rows=Array.isArray(t.items)?t.items:[];
     html+=`<div class="typecard" data-type="${esc(t.id)}"><div class="row" style="justify-content:space-between">
       <input type="text" id="ty-name-${esc(t.id)}" data-tf="name" value="${esc(t.name)}" style="font-family:var(--f-display);font-size:1.15rem;font-weight:700;flex:1;min-width:180px">
-      <label class="muted">מחיר למשתתף ₪ <input type="number" id="ty-price-${esc(t.id)}" data-tf="price" value="${t.price==null?'':esc(t.price)}" style="width:80px"></label>
       <button type="button" class="btn sm danger" data-deltype="${esc(t.id)}">מחיקת סוג</button></div>
       <div class="tablebox"><table><thead><tr><th>פריט</th><th>כמות</th><th>לכל</th><th></th></tr></thead><tbody>
       ${rows.map((r,i)=>`<tr><td><select id="ty-${esc(t.id)}-it-${i}" data-ri="${i}" data-rf="itemId">${S.items.map(it=>`<option value="${esc(it.id)}"${it.id===r.itemId?' selected':''}>${esc(it.name)}</option>`).join('')}${itemOf(r.itemId)?'':'<option selected value="">(פריט נמחק)</option>'}</select></td>
@@ -383,8 +436,7 @@ function openDialog(id){
     <label>מקסימום משתתפים<input type="number" min="0" id="w-capacity" name="capacity" value="${esc(w.capacity||'')}"></label>
     <label>איש קשר<input type="text" id="w-contact" name="contact" value="${esc(w.contact||'')}"></label>
     <label>טלפון<input type="tel" id="w-phone" name="phone" value="${esc(w.phone||'')}" dir="ltr"></label>
-    <label>מחיר / תשלום<input type="text" id="w-price" name="price" value="${esc(w.price||'')}" placeholder="320 ₪ למשתתף / 4,500 ₪ סה״כ"></label>
-    <label>קישור הרשמה<input type="text" id="w-link" name="link" value="${esc(w.link||'')}" dir="ltr"></label>
+    <label class="full">קישור הרשמה<input type="text" id="w-link" name="link" value="${esc(w.link||'')}" dir="ltr"></label>
     <label class="full">הערות<textarea id="w-notes" name="notes">${esc(w.notes||'')}</textarea></label>
     ${id?'':'<div class="full"><button class="btn primary" type="submit">יצירת הסדנה</button></div>'}
   </form>
@@ -492,8 +544,27 @@ function renderSettings(v){
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;S.tab=b.dataset.tab;try{localStorage.setItem('lw-tab',S.tab)}catch(_){}pendingRender=false;render()});
 $('#view').addEventListener('click',e=>{const o=e.target.closest('[data-open]');if(o){openDialog(o.dataset.open);return}
   const f=e.target.closest('[data-filter]');if(f){S.filter=f.dataset.filter;render();return}
-  const h=e.target.closest('[data-hz]');if(h){S.horizon=n(h.dataset.hz);render()}});
+  const h=e.target.closest('[data-hz]');if(h){S.horizon=n(h.dataset.hz);render();return}
+  const vw=e.target.closest('[data-view]');if(vw){S.view=vw.dataset.view;try{localStorage.setItem('lw-view',S.view)}catch(_){}hideTip();render();return}
+  const mn=e.target.closest('[data-mnav]');if(mn){const k=n(mn.dataset.mnav);
+    if(!k)S.month=todayStr().slice(0,7);else{const [y,m]=(S.month||todayStr().slice(0,7)).split('-').map(Number);const d=new Date(y,m-1+k,1);S.month=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+    hideTip();render()}});
+const tipEl=$('#tip');let tipFor=null;
+function hideTip(){tipEl.hidden=true;tipFor=null}
+$('#view').addEventListener('mouseover',e=>{
+  if(!window.matchMedia('(hover: hover)').matches)return;
+  const b=e.target.closest('[data-tip]');if(!b){hideTip();return}
+  if(tipFor===b)return;const w=S.workshops.find(x=>x.id===b.dataset.tip);if(!w)return;
+  tipFor=b;tipEl.innerHTML=tipHtml(w);tipEl.hidden=false;
+  const r=b.getBoundingClientRect(),tw=tipEl.offsetWidth,th=tipEl.offsetHeight;
+  let left=Math.min(Math.max(8,r.left+r.width/2-tw/2),window.innerWidth-tw-8);
+  let top=r.bottom+6;if(top+th>window.innerHeight-8)top=Math.max(8,r.top-th-6);
+  tipEl.style.left=left+'px';tipEl.style.top=top+'px';
+});
+$('#view').addEventListener('mouseleave',hideTip);
+window.addEventListener('scroll',hideTip,{passive:true});
 $('#newBtn').onclick=()=>{if(!db){toast('המערכת עדיין לא מחוברת');return}openDialog(null)};
+try{const vv=localStorage.getItem('lw-view');if(vv==='month'||vv==='list')S.view=vv}catch(_){}
 try{const t=localStorage.getItem('lw-tab');if(t&&['workshops','shopping','inventory','types','settings'].includes(t))S.tab=t}catch(_){}
 
 /* ---------- data (server API) ---------- */
