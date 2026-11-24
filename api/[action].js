@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 
     if (!authed(req)) return send(res, 401, { error: "login" });
     const origin = req.headers.origin;
-    if (origin && origin !== "https://sadnaot.liloubooks.com" && !/^https:\/\/sadnaot[a-z0-9-]*\.vercel\.app$/.test(origin))
+    if (origin && !["https://calendar.liloubooks.com", "https://sadnaot.liloubooks.com"].includes(origin) && !/^https:\/\/sadnaot[a-z0-9-]*\.vercel\.app$/.test(origin))
       return send(res, 403, { error: "origin" });
 
     if (action === "write") {

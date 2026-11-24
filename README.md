@@ -1,4 +1,4 @@
-# sadnaot.liloubooks.com
+# calendar.liloubooks.com
 
 Lilou Books workshop board: workshops, prep checklists, inventory and linked
 correspondence, behind one shared password. Hosted on Vercel.
