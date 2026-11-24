@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>לוח הסדנאות של לילו</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;600;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+
+/* Layout: a single working column. Summary strip on top, tabs, then the current view; a workshop opens in a dialog. Page-edge stripes mark prep progress. */
+:root{
+  --bg:#F8F7F4; --surface:#FFFFFF; --ink:#2A231B; --muted:#776C5F; --line:#E5DFD5;
+  --accent:#87714E; --accent-ink:#FFFFFF; --accent-soft:#F0E9DD;
+  --ok:#3C7653; --ok-soft:#E3F0E7; --warn:#A66B12; --warn-soft:#F8EDD9; --bad:#AE3838; --bad-soft:#F7E1E0;
+  --f-display:"Frank Ruhl Libre","David",Georgia,serif;
+  --f-body:"Assistant","Arial Hebrew",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#16130F; --surface:#201B15; --ink:#EEE7DC; --muted:#A99D8E; --line:#3A3229;
+  --accent:#C8AE82; --accent-ink:#1A150F; --accent-soft:#2F281F;
+  --ok:#7CC496; --ok-soft:#1F3127; --warn:#E3AE5B; --warn-soft:#382A15; --bad:#EE8A85; --bad-soft:#3A1F1E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16130F; --surface:#201B15; --ink:#EEE7DC; --muted:#A99D8E; --line:#3A3229;
+  --accent:#C8AE82; --accent-ink:#1A150F; --accent-soft:#2F281F;
+  --ok:#7CC496; --ok-soft:#1F3127; --warn:#E3AE5B; --warn-soft:#382A15; --bad:#EE8A85; --bad-soft:#3A1F1E; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;margin:0;text-wrap:balance}
+h1{font-size:1.9rem}
+h2{font-size:1.3rem}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 14px;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:3px 10px;font-size:.88rem}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.top .sub{color:var(--muted);margin-top:2px}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.summary>div{background:var(--surface);padding:12px 14px;min-width:0}
+.summary .k{font-size:.78rem;color:var(--muted);letter-spacing:.02em}
+.summary .v{font-family:var(--f-display);font-size:1.5rem;font-weight:700;line-height:1.2}
+.summary .s{font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.summary .v.bad{color:var(--bad)} .summary .v.ok{color:var(--ok)}
+@media (max-width:640px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:9px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs .count{font-size:.8rem;background:var(--bad-soft);color:var(--bad);border-radius:99px;padding:0 7px;margin-inline-start:4px}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:5px 12px}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);font-weight:700}
+.month{font-family:var(--f-display);font-size:1.05rem;color:var(--muted);margin:6px 0 -4px}
+.list{display:flex;flex-direction:column;gap:10px}
+.card{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:start;width:100%}
+.card:hover{border-color:var(--accent)}
+.card.past{opacity:.7}
+.dateblk{text-align:center;border-inline-end:1px solid var(--line);padding-inline-end:12px}
+.dateblk .d{font-family:var(--f-display);font-size:1.7rem;font-weight:700;line-height:1}
+.dateblk .w{font-size:.8rem;color:var(--muted)}
+.card .t{font-weight:700;font-size:1.05rem}
+.card .meta{color:var(--muted);font-size:.9rem;display:flex;gap:4px 14px;flex-wrap:wrap}
+.chips{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.pill{display:inline-block;border-radius:99px;padding:1px 10px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.neutral{background:var(--accent-soft);color:var(--accent)}
+@media (max-width:560px){.card{grid-template-columns:52px minmax(0,1fr)}.chips{grid-column:1 / -1;flex-direction:row;flex-wrap:wrap;justify-content:flex-start}}
+/* page-edge progress: each stripe is a page; folded pages are filled */
+.edge{height:8px;border-radius:2px;margin-top:6px;max-width:220px;background:repeating-linear-gradient(90deg,var(--line) 0 2px,transparent 2px 4px)}
+.edge>i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--accent) 0 2px,transparent 2px 4px)}
+.empty{border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:middle}
+th{font-size:.8rem;color:var(--muted);font-weight:600;letter-spacing:.02em;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td input[type=number]{width:70px}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=tel],select,textarea{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 8px;max-width:100%}
+textarea{width:100%;min-height:70px}
+.stepper{display:inline-flex;align-items:center;gap:4px}
+.stepper button{width:28px;height:28px;border:1px solid var(--line);background:var(--surface);border-radius:6px;font-weight:700}
+.short{color:var(--bad);font-weight:700}
+.okc{color:var(--ok);font-weight:700}
+.note{background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:.92rem}
+dialog{border:0;border-radius:14px;padding:0;background:var(--surface);color:var(--ink);width:min(720px,calc(100vw - 24px));max-height:calc(100vh - 32px);margin:auto}
+dialog::backdrop{background:rgba(20,15,10,.45)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+.dlg-body{padding:16px 18px;display:flex;flex-direction:column;gap:18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+.grid label{display:flex;flex-direction:column;gap:3px;font-size:.85rem;color:var(--muted);min-width:0}
+.grid label.full{grid-column:1 / -1}
+.grid input,.grid select,.grid textarea{color:var(--ink);font-size:.95rem;width:100%}
+@media (max-width:520px){.grid{grid-template-columns:minmax(0,1fr)}}
+.check{display:flex;flex-direction:column;gap:2px}
+.check label{display:flex;gap:10px;align-items:center;padding:5px 2px;border-bottom:1px dashed var(--line)}
+.check label.done span{text-decoration:line-through;color:var(--muted)}
+.check input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.check .x{margin-inline-start:auto;border:0;background:none;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.typecard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.typecard table{min-width:420px}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;font-weight:600;z-index:20}
+.banner{border-radius:10px;padding:10px 14px;background:var(--warn-soft);color:var(--warn)}
+.confirm{display:inline-flex;gap:6px;align-items:center}
+.login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.login form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;width:min(360px,100%)}
+.login input{font-size:1rem;padding:10px 12px}
+.login .err{color:var(--bad);font-size:.9rem;min-height:1.2em}
+.settings{display:flex;flex-direction:column;gap:14px;max-width:680px}
+.settings section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.settings ol{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:4px}
+.threads{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.thread{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;background:var(--bg)}
+.thread a{color:var(--accent);font-weight:600;font-size:.9rem}
+.thread .x{color:var(--muted);border:0;background:none}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="he">
+  <div class="top">
+    <div>
+      <h1>לוח הסדנאות</h1>
+      <div class="sub">מתי, איפה, כמה משתתפים, מה להכין ומה חסר במלאי</div>
+    </div>
+    <button class="btn primary" id="newBtn" type="button">+ סדנה חדשה</button>
+  </div>
+
+  <div id="banner" class="banner" hidden></div>
+  <div class="summary" id="summary"></div>
+
+  <div class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-tab="workshops" aria-selected="true">סדנאות</button>
+    <button role="tab" data-tab="shopping" aria-selected="false">מה חסר<span class="count" id="missCount" hidden></span></button>
+    <button role="tab" data-tab="inventory" aria-selected="false">מלאי</button>
+    <button role="tab" data-tab="types" aria-selected="false">סוגי סדנאות</button>
+    <button role="tab" data-tab="settings" aria-selected="false">הגדרות</button>
+  </div>
+
+  <div id="view"><div class="empty">טוען את הסדנאות…</div></div>
+</div>
+
+<div class="login" id="login" hidden dir="rtl" lang="he"><form id="loginForm"><h2>לוח הסדנאות</h2><label for="pw" class="muted">סיסמה</label><input type="password" id="pw" autocomplete="current-password" required><div class="err" id="loginErr"></div><button class="btn primary" type="submit">כניסה</button></form></div>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const STATUS={tentative:{l:'טנטטיבי',c:'warn'},confirmed:{l:'מאושר',c:'ok'},done:{l:'התקיימה',c:'neutral'},cancelled:{l:'בוטלה',c:'bad'}};
+const S={workshops:[],items:[],types:[],loaded:{w:false,i:false,t:false},tab:'workshops',filter:'upcoming',horizon:30,openId:null};
+let db=null, pendingRender=false;
+const $=s=>document.querySelector(s);
+const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const dObj=s=>new Date(s+'T00:00:00');
+const daysUntil=s=>Math.round((dObj(s)-dObj(todayStr()))/864e5);
+const fmtDate=s=>s?dObj(s).toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'numeric'}):'בלי תאריך';
+const n=v=>{const x=Number(v);return isFinite(x)?x:0};
+function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
+async function write(fn,okMsg){try{await fn();if(okMsg)toast(okMsg)}catch(e){toast(e&&e.code==='quota_exceeded'?'המאגר מלא, צריך למחוק פריטים ישנים':'השמירה לא הצליחה, נסי שוב');console.error(e)}}
+
+/* ---------- materials math ---------- */
+const typeOf=w=>S.types.find(t=>t.id===w.typeId);
+const itemOf=id=>S.items.find(i=>i.id===id);
+function needsOf(w){
+  const t=typeOf(w);const out={};if(!t||!Array.isArray(t.items))return out;
+  const ppl=n(w.participants);
+  t.items.forEach(r=>{if(!r||!r.itemId)return;const q=r.per==='workshop'?n(r.qty):Math.ceil(n(r.qty)*ppl);out[r.itemId]=(out[r.itemId]||0)+q});
+  return out;
+}
+const isActive=w=>w.status!=='done'&&w.status!=='cancelled'&&w.date&&w.date>=todayStr();
+const activeSorted=()=>S.workshops.filter(isActive).sort((a,b)=>(a.date+(a.start||'')).localeCompare(b.date+(b.start||'')));
+/* consumables are used up in date order; tools only need to cover one workshop at a time */
+function allocation(){
+  const left={};S.items.forEach(i=>left[i.id]=n(i.stock));
+  const res={};
+  activeSorted().forEach(w=>{
+    const need=needsOf(w);const rows=[];
+    Object.keys(need).forEach(id=>{
+      const it=itemOf(id);if(!it)return;const q=need[id];
+      let have,short;
+      if(it.kind==='tool'){have=n(it.stock);short=Math.max(0,q-have)}
+      else{have=Math.max(0,left[id]);short=Math.max(0,q-have);left[id]-=q}
+      rows.push({it,need:q,have,short});
+    });
+    res[w.id]=rows;
+  });
+  return res;
+}
+function shoppingList(horizon){
+  const lim=horizon?todayStr2(horizon):null;
+  const ws=activeSorted().filter(w=>!lim||w.date<=lim);
+  const agg={};
+  ws.forEach(w=>{const need=needsOf(w);Object.keys(need).forEach(id=>{const it=itemOf(id);if(!it)return;
+    const a=agg[id]||(agg[id]={it,need:0,uses:[]});
+    a.need=it.kind==='tool'?Math.max(a.need,need[id]):a.need+need[id];a.uses.push(w)})});
+  const rows=[];
+  S.items.forEach(it=>{const a=agg[it.id];const need=a?a.need:0;const stock=n(it.stock);
+    const short=Math.max(0,need-stock);const belowMin=it.minStock!=null&&it.minStock!==''&&(stock-(it.kind==='tool'?0:need))<n(it.minStock);
+    const uncounted=it.stock==null||it.stock==='';
+    if(short>0||belowMin||(uncounted&&need>0))rows.push({it,need,stock,short,belowMin,uncounted,uses:a?a.uses:[],topUp:Math.max(short,belowMin?n(it.minStock)-(stock-(it.kind==='tool'?0:need)):0)})});
+  rows.sort((a,b)=>b.short-a.short);
+  return {rows,count:ws.length};
+}
+function todayStr2(days){const d=new Date();d.setDate(d.getDate()+days);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+const checkProg=w=>{const c=Array.isArray(w.checklist)?w.checklist:[];return {done:c.filter(x=>x&&x.d).length,total:c.length}};
+
+/* ---------- render ---------- */
+function render(){
+  const ae=document.activeElement;
+  if(ae&&$('#view').contains(ae)&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)){pendingRender=true;renderSummary();return}
+  pendingRender=false;renderSummary();
+  document.querySelectorAll('#tabs [data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===S.tab)));
+  const v=$('#view');
+  if(!S.loaded.w||!S.loaded.i||!S.loaded.t){v.innerHTML='<div class="empty">טוען את הסדנאות…</div>';return}
+  ({workshops:renderWorkshops,shopping:renderShopping,inventory:renderInventory,types:renderTypes,settings:renderSettings})[S.tab](v);
+  if(S.openId)refreshDialogLive();
+}
+document.addEventListener('focusout',()=>setTimeout(()=>{if(pendingRender)render()},0));
+
+function renderSummary(){
+  const act=activeSorted();const next=act[0];
+  const in30=act.filter(w=>w.date<=todayStr2(30));
+  const ppl=in30.reduce((s,w)=>s+n(w.participants),0);
+  const miss=shoppingList(30).rows.filter(r=>r.short>0).length;
+  const mc=$('#missCount');mc.hidden=!miss;mc.textContent=miss;
+  let nextHtml='<div class="v">—</div><div class="s">אין סדנה מתוכננת</div>';
+  if(next){const d=daysUntil(next.date);nextHtml=`<div class="v num">${d===0?'היום':d===1?'מחר':'בעוד '+d+' ימים'}</div><div class="s">${esc(next.title||'סדנה')} · ${esc(fmtDate(next.date))}</div>`}
+  $('#summary').innerHTML=`<div><div class="k">הסדנה הבאה</div>${nextHtml}</div>
+   <div><div class="k">סדנאות ב־30 יום</div><div class="v num">${in30.length}</div><div class="s">${act.length} מתוכננות בסך הכול</div></div>
+   <div><div class="k">משתתפים צפויים ב־30 יום</div><div class="v num">${ppl}</div><div class="s">לפי מספר הרשומים</div></div>
+   <div><div class="k">פריטים חסרים ב־30 יום</div><div class="v num ${miss?'bad':'ok'}">${miss}</div><div class="s">${miss?'פרטים בלשונית "מה חסר"':'הציוד מספיק'}</div></div>`;
+}
+
+function renderWorkshops(v){
+  const alloc=allocation();const t=todayStr();
+  let ws=S.workshops.slice();
+  if(S.filter==='upcoming')ws=ws.filter(w=>!w.date||w.date>=t).filter(w=>w.status!=='done');
+  else if(S.filter==='past')ws=ws.filter(w=>(w.date&&w.date<t)||w.status==='done');
+  ws.sort((a,b)=>((a.date||'9')+(a.start||'')).localeCompare((b.date||'9')+(b.start||'')));
+  if(S.filter==='past')ws.reverse();
+  let html=`<div class="toolbar"><div class="seg" role="group" aria-label="סינון">
+    ${[['upcoming','קרובות'],['past','שהיו'],['all','הכול']].map(([k,l])=>`<button type="button" data-filter="${k}" aria-pressed="${S.filter===k}">${l}</button>`).join('')}
+  </div></div><div class="list" style="margin-top:12px">`;
+  if(!ws.length)html+=`<div class="empty">${S.filter==='past'?'אין עדיין סדנאות שהתקיימו.':'אין סדנאות קרובות. לחצי "+ סדנה חדשה" כדי להוסיף את הראשונה.'}</div>`;
+  let lastMonth='';
+  ws.forEach(w=>{
+    const m=w.date?dObj(w.date).toLocaleDateString('he-IL',{month:'long',year:'numeric'}):'בלי תאריך';
+    if(m!==lastMonth){html+=`<div class="month">${esc(m)}</div>`;lastMonth=m}
+    const st=STATUS[w.status]||STATUS.tentative;const ty=typeOf(w);const p=checkProg(w);
+    const rows=alloc[w.id];let mat='';
+    if(rows){const sh=rows.filter(r=>r.short>0);mat=!ty?'<span class="pill neutral">לא נבחר סוג</span>':sh.length?`<span class="pill bad">חסרים ${sh.length} פריטים</span>`:'<span class="pill ok">הציוד מספיק</span>'}
+    const pct=p.total?Math.round(p.done/p.total*100):0;
+    html+=`<button type="button" class="card ${isActive(w)||w.status==='tentative'&&w.date>=t?'':'past'}" data-open="${esc(w.id)}">
+      <div class="dateblk"><div class="d num">${w.date?dObj(w.date).getDate():'?'}</div><div class="w">${w.date?esc(dObj(w.date).toLocaleDateString('he-IL',{weekday:'short'})):''}</div></div>
+      <div style="min-width:0"><div class="t">${esc(w.title||'סדנה בלי שם')}</div>
+        <div class="meta"><span class="num">${esc(w.start||'')}${w.end?'–'+esc(w.end):''}</span><span>${esc(w.place||'מקום לא נקבע')}</span><span class="num">${n(w.participants)}${w.capacity?' / '+n(w.capacity):''} משתתפים</span>${ty?`<span>${esc(ty.name)}</span>`:''}${(w.threads||[]).length?`<span>✉ ${(w.threads||[]).length} התכתבויות</span>`:''}</div>
+        ${p.total?`<div class="edge" title="הכנה ${p.done}/${p.total}"><i style="width:${pct}%"></i></div><div class="muted num" style="font-size:.8rem">הכנה ${p.done}/${p.total}${(()=>{const open=(w.checklist||[]).filter(c=>c&&!c.d);return open.length&&w.status!=='done'?' · עוד לא: '+open.slice(0,3).map(c=>esc(c.t)).join(' · ')+(open.length>3?' ועוד '+(open.length-3):''):''})()}</div>`:''}
+      </div>
+      <div class="chips"><span class="pill ${st.c}">${st.l}</span>${mat}${w.gcalMissing?'<span class="pill warn">לא נמצא ביומן</span>':''}</div>
+    </button>`;
+  });
+  v.innerHTML=html+'</div>';
+}
+
+function renderShopping(v){
+  const {rows,count}=shoppingList(S.horizon);
+  let html=`<div class="toolbar"><div class="row"><span class="muted">לסדנאות של</span><div class="seg" role="group">
+    ${[[14,'שבועיים'],[30,'חודש'],[60,'חודשיים'],[0,'כל העתידיות']].map(([k,l])=>`<button type="button" data-hz="${k}" aria-pressed="${S.horizon===k}">${l}</button>`).join('')}
+  </div></div>${rows.length?'<button class="btn" type="button" id="copyList">העתקת רשימת קניות</button>':''}</div>
+  <p class="muted" style="margin:10px 0">${count} סדנאות בטווח. חומרים מתכלים (ספרים, תבניות) מצטברים בין הסדנאות; כלים (סרגלים, עפרונות) צריך רק כמה שיש בסדנה הגדולה ביותר.</p>`;
+  if(!rows.length){v.innerHTML=html+'<div class="empty">אין מה לקנות. המלאי מכסה את כל הסדנאות בטווח הזה.</div>';return}
+  html+=`<div class="tablebox"><table><thead><tr><th>פריט</th><th>צריך</th><th>במלאי</th><th>לקנות</th><th>בשביל</th></tr></thead><tbody>`;
+  rows.forEach(r=>{html+=`<tr><td><b>${esc(r.it.name)}</b> <span class="muted">${r.it.kind==='tool'?'כלי':'מתכלה'}</span></td>
+    <td class="num">${r.need} ${esc(r.it.unit||'')}</td>
+    <td class="num">${r.uncounted?'<span class="pill warn">לא נספר</span>':r.stock}</td>
+    <td class="num">${r.topUp>0?`<span class="short">${r.topUp}</span>`:''}${r.belowMin&&r.short===0?' <span class="muted">(השלמה למינימום)</span>':''}</td>
+    <td class="muted" style="font-size:.85rem">${r.uses.slice(0,4).map(w=>esc((w.date||'').slice(8,10)+'.'+(w.date||'').slice(5,7))).join(', ')}${r.uses.length>4?'…':''}</td></tr>`});
+  v.innerHTML=html+'</tbody></table></div>';
+  $('#copyList').onclick=()=>{
+    const txt='רשימת קניות לסדנאות:\n'+rows.filter(r=>r.topUp>0||r.uncounted).map(r=>'• '+r.it.name+': '+(r.topUp>0?r.topUp+' '+(r.it.unit||''):'לבדוק כמה יש')).join('\n');
+    const done=()=>toast('הרשימה הועתקה');
+    try{navigator.clipboard.writeText(txt).then(done,()=>fallbackCopy(txt))}catch(e){fallbackCopy(txt)}
+  };
+}
+function fallbackCopy(txt){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('הרשימה הועתקה')}catch(e){toast('סמני והעתיקי ידנית')}ta.remove()}
+
+function reservedMap(){const m={};activeSorted().forEach(w=>{const nd=needsOf(w);Object.keys(nd).forEach(id=>{const it=itemOf(id);if(!it)return;m[id]=it.kind==='tool'?Math.max(m[id]||0,nd[id]):(m[id]||0)+nd[id]})});return m}
+function renderInventory(v){
+  const res=reservedMap();
+  const items=S.items.slice().sort((a,b)=>(a.kind||'').localeCompare(b.kind||'')||String(a.name).localeCompare(String(b.name),'he'));
+  let html=`<div class="note">עדכני כמה יש מכל פריט. "שמור לסדנאות" מחושב מכל הסדנאות העתידיות לפי סוג הסדנה ומספר המשתתפים. כשסדנה מסתיימת, כפתור "התקיימה" בתוך הסדנה מוריד את החומרים המתכלים מהמלאי.</div>
+  <div class="tablebox" style="margin-top:12px"><table><thead><tr><th>פריט</th><th>סוג</th><th>יחידה</th><th>במלאי</th><th>שמור לסדנאות</th><th>פנוי</th><th>מינימום</th><th></th></tr></thead><tbody>`;
+  if(!items.length)html+='<tr><td colspan="8" class="muted">אין פריטים במלאי. הוסיפי פריט ראשון למטה.</td></tr>';
+  items.forEach(it=>{const r=res[it.id]||0;const unc=it.stock==null||it.stock==='';const free=n(it.stock)-r;
+    html+=`<tr data-item="${esc(it.id)}"><td><input type="text" id="in-name-${esc(it.id)}" data-f="name" value="${esc(it.name)}" style="min-width:140px"></td>
+    <td><select id="in-kind-${esc(it.id)}" data-f="kind"><option value="consumable"${it.kind!=='tool'?' selected':''}>מתכלה</option><option value="tool"${it.kind==='tool'?' selected':''}>כלי</option></select></td>
+    <td><input type="text" id="in-unit-${esc(it.id)}" data-f="unit" value="${esc(it.unit||'')}" style="width:70px"></td>
+    <td><span class="stepper"><button type="button" data-step="-1" aria-label="פחות">−</button><input type="number" min="0" id="in-stock-${esc(it.id)}" data-f="stock" value="${unc?'':n(it.stock)}" placeholder="?" class="num"><button type="button" data-step="1" aria-label="יותר">+</button></span></td>
+    <td class="num">${r}</td>
+    <td class="num">${unc?'<span class="pill warn">לא נספר</span>':`<span class="${free<0?'short':'okc'}">${free}</span>`}</td>
+    <td><input type="number" min="0" id="in-min-${esc(it.id)}" data-f="minStock" value="${it.minStock==null?'':esc(it.minStock)}" class="num"></td>
+    <td><button type="button" class="btn sm danger" data-delitem="${esc(it.id)}">מחיקה</button></td></tr>`});
+  html+=`</tbody></table></div>
+  <form id="addItem" class="row" style="margin-top:12px"><input type="text" id="ni-name" placeholder="פריט חדש, למשל: ספרים ישנים" required style="flex:1;min-width:180px">
+  <select id="ni-kind"><option value="consumable">מתכלה</option><option value="tool">כלי</option></select>
+  <input type="text" id="ni-unit" placeholder="יחידה" style="width:80px"><input type="number" id="ni-stock" placeholder="כמות" min="0" style="width:80px">
+  <button class="btn primary" type="submit">הוספה</button></form>`;
+  v.innerHTML=html;
+  v.querySelectorAll('tr[data-item]').forEach(tr=>{const id=tr.dataset.item;const ref=db.collection('inventory').doc(id);
+    tr.querySelectorAll('[data-f]').forEach(inp=>inp.addEventListener('change',()=>{const f=inp.dataset.f;let val=inp.value;
+      if(f==='stock'||f==='minStock')val=val===''?null:Math.max(0,n(val));write(()=>ref.update({[f]:val}))}));
+    tr.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const it=itemOf(id);write(()=>ref.update({stock:Math.max(0,n(it.stock)+n(b.dataset.step))}))});
+  });
+  v.querySelectorAll('[data-delitem]').forEach(b=>b.onclick=()=>confirmInline(b,'למחוק?',()=>write(()=>db.collection('inventory').doc(b.dataset.delitem).delete(),'הפריט נמחק')));
+  $('#addItem').onsubmit=e=>{e.preventDefault();const name=$('#ni-name').value.trim();if(!name)return;const s=$('#ni-stock').value;
+    write(()=>db.collection('inventory').add({name,kind:$('#ni-kind').value,unit:$('#ni-unit').value.trim(),stock:s===''?null:n(s),minStock:null}),'נוסף למלאי')};
+}
+function confirmInline(btn,label,fn){const span=document.createElement('span');span.className='confirm';
+  span.innerHTML=`<span>${esc(label)}</span><button type="button" class="btn sm danger">כן</button><button type="button" class="btn sm">לא</button>`;
+  btn.replaceWith(span);const [yes,no]=span.querySelectorAll('button');yes.onclick=fn;no.onclick=()=>span.replaceWith(btn);yes.focus()}
+
+function renderTypes(v){
+  let html=`<div class="note">כל סוג סדנה מגדיר מה צריך לכל משתתף (או לכל הסדנה) ומה הרשימה להכנה. כשיוצרים סדנה מסוג מסוים, רשימת ההכנה נטענת אליה אוטומטית.</div><div class="list" style="margin-top:12px">`;
+  S.types.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'he')).forEach(t=>{
+    const rows=Array.isArray(t.items)?t.items:[];
+    html+=`<div class="typecard" data-type="${esc(t.id)}"><div class="row" style="justify-content:space-between">
+      <input type="text" id="ty-name-${esc(t.id)}" data-tf="name" value="${esc(t.name)}" style="font-family:var(--f-display);font-size:1.15rem;font-weight:700;flex:1;min-width:180px">
+      <label class="muted">מחיר למשתתף ₪ <input type="number" id="ty-price-${esc(t.id)}" data-tf="price" value="${t.price==null?'':esc(t.price)}" style="width:80px"></label>
+      <button type="button" class="btn sm danger" data-deltype="${esc(t.id)}">מחיקת סוג</button></div>
+      <div class="tablebox"><table><thead><tr><th>פריט</th><th>כמות</th><th>לכל</th><th></th></tr></thead><tbody>
+      ${rows.map((r,i)=>`<tr><td><select id="ty-${esc(t.id)}-it-${i}" data-ri="${i}" data-rf="itemId">${S.items.map(it=>`<option value="${esc(it.id)}"${it.id===r.itemId?' selected':''}>${esc(it.name)}</option>`).join('')}${itemOf(r.itemId)?'':'<option selected value="">(פריט נמחק)</option>'}</select></td>
+        <td><input type="number" step="0.1" min="0" id="ty-${esc(t.id)}-q-${i}" data-ri="${i}" data-rf="qty" value="${esc(r.qty)}" class="num"></td>
+        <td><select id="ty-${esc(t.id)}-per-${i}" data-ri="${i}" data-rf="per"><option value="person"${r.per!=='workshop'?' selected':''}>משתתף</option><option value="workshop"${r.per==='workshop'?' selected':''}>סדנה</option></select></td>
+        <td><button type="button" class="btn sm" data-rmrow="${i}" aria-label="הסרה">✕</button></td></tr>`).join('')}
+      </tbody></table></div>
+      <div>${S.items.length?'<button type="button" class="btn sm" data-addrow>+ פריט לסדנה</button>':'<span class="muted">הוסיפי קודם פריטים בלשונית מלאי</span>'}</div>
+      <label class="muted" style="display:flex;flex-direction:column;gap:4px">רשימת הכנה (שורה לכל משימה)
+        <textarea id="ty-prep-${esc(t.id)}" data-tf="prep">${esc((t.prep||[]).join('\n'))}</textarea></label>
+    </div>`});
+  html+=`</div><form id="addType" class="row" style="margin-top:12px"><input type="text" id="nt-name" placeholder="סוג סדנה חדש, למשל: גיבוש לחברות" required style="flex:1;min-width:200px"><button class="btn primary" type="submit">הוספת סוג</button></form>`;
+  v.innerHTML=html;
+  v.querySelectorAll('[data-type]').forEach(card=>{const id=card.dataset.type;const ref=db.collection('types').doc(id);const t=()=>S.types.find(x=>x.id===id);
+    card.querySelectorAll('[data-tf]').forEach(inp=>inp.addEventListener('change',()=>{const f=inp.dataset.tf;let val=inp.value;
+      if(f==='prep')val=val.split('\n').map(s=>s.trim()).filter(Boolean);if(f==='price')val=val===''?null:n(val);write(()=>ref.update({[f]:val}))}));
+    card.querySelectorAll('[data-rf]').forEach(inp=>inp.addEventListener('change',()=>{const items=(t().items||[]).map(r=>({...r}));const i=n(inp.dataset.ri);
+      items[i][inp.dataset.rf]=inp.dataset.rf==='qty'?n(inp.value):inp.value;write(()=>ref.update({items}))}));
+    card.querySelectorAll('[data-rmrow]').forEach(b=>b.onclick=()=>{const items=(t().items||[]).filter((_,i)=>i!==n(b.dataset.rmrow));write(()=>ref.update({items}))});
+    const add=card.querySelector('[data-addrow]');if(add)add.onclick=()=>{const used=new Set((t().items||[]).map(r=>r.itemId));const it=S.items.find(i=>!used.has(i.id))||S.items[0];
+      write(()=>ref.update({items:[...(t().items||[]),{itemId:it.id,qty:1,per:'person'}]}))};
+    const del=card.querySelector('[data-deltype]');del.onclick=()=>confirmInline(del,'למחוק את הסוג?',()=>write(()=>ref.delete(),'הסוג נמחק'));
+  });
+  $('#addType').onsubmit=e=>{e.preventDefault();const name=$('#nt-name').value.trim();if(!name)return;write(()=>db.collection('types').add({name,price:null,items:[],prep:[]}),'נוסף סוג')};
+}
+
+/* ---------- workshop dialog ---------- */
+const dlg=$('#dlg');
+function openDialog(id){
+  S.openId=id||'__new';const w=id?S.workshops.find(x=>x.id===id):{status:'tentative',participants:'',date:'',typeId:S.types[0]?S.types[0].id:''};
+  if(!w)return;
+  dlg.innerHTML=`<div class="dlg-head"><h2>${id?esc(w.title||'סדנה'):'סדנה חדשה'}</h2><button type="button" class="btn sm" id="dlgClose">סגירה</button></div>
+  <div class="dlg-body"><form id="wForm" class="grid">
+    <label class="full">שם הסדנה<input type="text" id="w-title" name="title" value="${esc(w.title||'')}" placeholder="למשל: סדנה פתוחה בהרצליה" required></label>
+    <label>סוג סדנה<select id="w-type" name="typeId"><option value="">—</option>${S.types.map(t=>`<option value="${esc(t.id)}"${t.id===w.typeId?' selected':''}>${esc(t.name)}</option>`).join('')}</select></label>
+    <label>סטטוס<select id="w-status" name="status">${Object.entries(STATUS).map(([k,s])=>`<option value="${k}"${k===(w.status||'tentative')?' selected':''}>${s.l}</option>`).join('')}</select></label>
+    <label>תאריך<input type="date" id="w-date" name="date" value="${esc(w.date||'')}" required></label>
+    <div class="row" style="gap:10px"><label style="flex:1">התחלה<input type="time" id="w-start" name="start" value="${esc(w.start||'')}"></label><label style="flex:1">סיום<input type="time" id="w-end" name="end" value="${esc(w.end||'')}"></label></div>
+    <label>מקום<input type="text" id="w-place" name="place" value="${esc(w.place||'')}" placeholder="שם המקום"></label>
+    <label>כתובת<input type="text" id="w-address" name="address" value="${esc(w.address||'')}"></label>
+    <label>משתתפים רשומים<input type="number" min="0" id="w-participants" name="participants" value="${esc(w.participants)}"></label>
+    <label>מקסימום משתתפים<input type="number" min="0" id="w-capacity" name="capacity" value="${esc(w.capacity||'')}"></label>
+    <label>איש קשר<input type="text" id="w-contact" name="contact" value="${esc(w.contact||'')}"></label>
+    <label>טלפון<input type="tel" id="w-phone" name="phone" value="${esc(w.phone||'')}" dir="ltr"></label>
+    <label>מחיר / תשלום<input type="text" id="w-price" name="price" value="${esc(w.price||'')}" placeholder="320 ₪ למשתתף / 4,500 ₪ סה״כ"></label>
+    <label>קישור הרשמה<input type="text" id="w-link" name="link" value="${esc(w.link||'')}" dir="ltr"></label>
+    <label class="full">הערות<textarea id="w-notes" name="notes">${esc(w.notes||'')}</textarea></label>
+    ${id?'':'<div class="full"><button class="btn primary" type="submit">יצירת הסדנה</button></div>'}
+  </form>
+  ${id?'<section id="liveThreads"></section><section id="liveCheck"></section><section id="liveMat"></section><section id="liveActions"></section>':''}</div>`;
+  if(!dlg.open)dlg.showModal();
+  $('#dlgClose').onclick=()=>dlg.close();
+  const form=$('#wForm');
+  if(id){
+    const ref=db.collection('workshops').doc(id);
+    form.querySelectorAll('[name]').forEach(inp=>inp.addEventListener('change',()=>{let val=inp.value;if(inp.name==='participants'||inp.name==='capacity')val=val===''?null:n(val);
+      write(()=>ref.update({[inp.name]:val}));if(inp.name==='title')dlg.querySelector('h2').textContent=val||'סדנה'}));
+    refreshDialogLive();
+  }else{
+    form.onsubmit=e=>{e.preventDefault();const data={};form.querySelectorAll('[name]').forEach(i=>data[i.name]=i.value);
+      data.participants=data.participants===''?0:n(data.participants);data.capacity=data.capacity===''?null:n(data.capacity);
+      const t=S.types.find(x=>x.id===data.typeId);data.checklist=(t&&t.prep||[]).map(x=>({t:x,d:false}));data.created=new Date().toISOString();
+      const ref=db.collection('workshops').doc();
+      write(async()=>{await ref.set(data);S.openId=ref.id;setTimeout(()=>openDialog(ref.id),50)},'הסדנה נוספה')};
+  }
+}
+dlg.addEventListener('close',()=>{S.openId=null;if(pendingRender)render()});
+
+function refreshDialogLive(){
+  if(!S.openId||S.openId==='__new'||!dlg.open)return;
+  const w=S.workshops.find(x=>x.id===S.openId);if(!w){dlg.close();return}
+  const ref=db.collection('workshops').doc(w.id);
+  const list=Array.isArray(w.checklist)?w.checklist:[];
+  const cs=$('#liveCheck');
+  if(cs&&!cs.contains(document.activeElement)||cs&&document.activeElement.type==='checkbox'){
+    const p=checkProg(w);const ty=typeOf(w);
+    cs.innerHTML=`<div class="row" style="justify-content:space-between"><h3>מה להכין <span class="muted num" style="font-family:var(--f-body);font-size:.9rem">${p.done}/${p.total}</span></h3>
+      ${ty&&(ty.prep||[]).length?'<button type="button" class="btn sm" id="loadPrep">טעינת רשימה מהסוג</button>':''}</div>
+      <div class="check">${list.map((c,i)=>`<label class="${c.d?'done':''}"><input type="checkbox" id="ck-${i}" data-ck="${i}"${c.d?' checked':''}><span>${esc(c.t)}</span><button type="button" class="x" data-rmck="${i}" aria-label="הסרה">✕</button></label>`).join('')||'<div class="muted">אין משימות עדיין.</div>'}</div>
+      <form id="addCk" class="row" style="margin-top:8px"><input type="text" id="ck-new" placeholder="משימה חדשה" style="flex:1;min-width:160px"><button class="btn sm" type="submit">הוספה</button></form>`;
+    cs.querySelectorAll('[data-ck]').forEach(b=>b.onchange=()=>{const c=list.map(x=>({...x}));c[n(b.dataset.ck)].d=b.checked;write(()=>ref.update({checklist:c}))});
+    cs.querySelectorAll('[data-rmck]').forEach(b=>b.onclick=e=>{e.preventDefault();write(()=>ref.update({checklist:list.filter((_,i)=>i!==n(b.dataset.rmck))}))});
+    $('#addCk').onsubmit=e=>{e.preventDefault();const v=$('#ck-new').value.trim();if(!v)return;write(()=>ref.update({checklist:[...list,{t:v,d:false}]}))};
+    const lp=$('#loadPrep');if(lp)lp.onclick=()=>{const have=new Set(list.map(c=>c.t));write(()=>ref.update({checklist:[...list,...(ty.prep||[]).filter(x=>!have.has(x)).map(x=>({t:x,d:false}))]}))};
+  }
+  const ts=$('#liveThreads');
+  if(ts&&!ts.contains(document.activeElement)){
+    const th=(Array.isArray(w.threads)?w.threads:[]).slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+    const SRC={outlook:'מייל hi@',gmail:'Gmail',whatsapp:'וואטסאפ',phone:'טלפון'};
+    ts.innerHTML=`<h3>התכתבויות <span class="muted num" style="font-family:var(--f-body);font-size:.9rem">${th.length}</span></h3>
+      <div class="threads">${th.map((x,i)=>`<div class="thread"><div class="row" style="justify-content:space-between;gap:6px"><span><span class="pill neutral">${esc(SRC[x.src]||x.src||'')}</span> <b>${esc(x.who||'')}</b></span><span class="muted num" style="font-size:.85rem">${x.date?esc(x.date.slice(8,10)+'.'+x.date.slice(5,7)):''}</span></div>
+        ${x.subject?`<div class="muted" style="font-size:.88rem">${esc(x.subject)}</div>`:''}<div>${esc(x.summary||'')}</div>
+        <div class="row" style="justify-content:space-between">${/^https:\/\//.test(x.url||'')?`<a href="${esc(x.url)}" target="_blank" rel="noopener">לפתיחת ההתכתבות ↗</a>`:'<span></span>'}<button type="button" class="x btn sm" data-rmth="${th.indexOf(x)}" data-key="${esc((x.date||'')+'|'+(x.who||'')+'|'+(x.summary||'').slice(0,20))}">הסרה</button></div></div>`).join('')||'<div class="muted">אין עדיין התכתבויות מקושרות.</div>'}</div>
+      <details style="margin-top:8px"><summary class="muted" style="cursor:pointer">+ הוספת התכתבות (למשל סיכום מוואטסאפ)</summary>
+      <form id="addTh" class="grid" style="margin-top:8px"><label>מקור<select id="th-src"><option value="whatsapp">וואטסאפ</option><option value="outlook">מייל hi@</option><option value="gmail">Gmail</option><option value="phone">טלפון</option></select></label>
+      <label>עם מי<input type="text" id="th-who"></label><label class="full">מה סוכם<textarea id="th-sum"></textarea></label><label class="full">קישור (לא חובה)<input type="text" id="th-url" dir="ltr"></label>
+      <div class="full"><button class="btn sm primary" type="submit">שמירה</button></div></form></details>`;
+    ts.querySelectorAll('[data-rmth]').forEach(b=>b.onclick=()=>{const k=b.dataset.key;const all=Array.isArray(w.threads)?w.threads:[];
+      write(()=>ref.update({threads:all.filter(x=>((x.date||'')+'|'+(x.who||'')+'|'+(x.summary||'').slice(0,20))!==k)}))});
+    $('#addTh').onsubmit=e=>{e.preventDefault();const sum=$('#th-sum').value.trim();if(!sum)return;
+      const nt={src:$('#th-src').value,who:$('#th-who').value.trim(),summary:sum,url:$('#th-url').value.trim(),date:todayStr()};
+      write(()=>ref.update({threads:[...(Array.isArray(w.threads)?w.threads:[]),nt]}),'נשמר')};
+  }
+  const ms=$('#liveMat');
+  if(ms){const ty=typeOf(w);
+    if(!ty){ms.innerHTML='<h3>ציוד</h3><p class="muted">בחרי סוג סדנה כדי לחשב כמה ציוד צריך.</p>'}
+    else{const rows=isActive(w)?(allocation()[w.id]||[]):Object.entries(needsOf(w)).map(([id,q])=>({it:itemOf(id),need:q,have:null,short:0})).filter(r=>r.it);
+      ms.innerHTML=`<h3>ציוד לסדנה <span class="muted" style="font-family:var(--f-body);font-size:.9rem">לפי ${n(w.participants)} משתתפים</span></h3>
+      ${rows.length?`<div class="tablebox" style="margin-top:8px"><table style="min-width:380px"><thead><tr><th>פריט</th><th>צריך</th><th>זמין לסדנה הזו</th><th>חסר</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td>${esc(r.it.name)}</td><td class="num">${r.need} ${esc(r.it.unit||'')}</td><td class="num">${r.have==null?'—':(r.it.stock==null||r.it.stock==='')?'<span class="pill warn">לא נספר</span>':r.have}</td><td class="num">${r.short?`<span class="short">${r.short}</span>`:'<span class="okc">✓</span>'}</td></tr>`).join('')}
+      </tbody></table></div><p class="muted" style="font-size:.85rem">"זמין" לוקח בחשבון סדנאות מוקדמות יותר שמשתמשות באותם חומרים.</p>`:'<p class="muted">לסוג הזה לא הוגדרו פריטים.</p>'}`}}
+  const as=$('#liveActions');
+  if(as&&!as.querySelector('.confirm')){
+    as.innerHTML=`<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:14px">
+      ${w.status!=='done'&&w.status!=='cancelled'?'<button type="button" class="btn primary" id="markDone">התקיימה · להוריד חומרים מהמלאי</button>':'<span class="muted">הסדנה '+esc((STATUS[w.status]||{}).l||'')+'</span>'}
+      <button type="button" class="btn danger" id="delW">מחיקת הסדנה</button></div>`;
+    const md=$('#markDone');if(md)md.onclick=()=>confirmInline(md,'להוריד מהמלאי את החומרים המתכלים?',()=>write(async()=>{
+      const nd=needsOf(w);for(const id of Object.keys(nd)){const it=itemOf(id);if(it&&it.kind!=='tool'&&it.stock!=null&&it.stock!=='')await db.collection('inventory').doc(id).update({stock:Math.max(0,n(it.stock)-nd[id])})}
+      await ref.update({status:'done'});$('#w-status').value='done'},'סומנה כהתקיימה והמלאי עודכן'));
+    const dw=$('#delW');dw.onclick=()=>confirmInline(dw,'למחוק לצמיתות?',()=>write(async()=>{await ref.delete();dlg.close()},'הסדנה נמחקה'));
+  }
+}
+
+
+function renderSettings(v){
+  const st=S.settings||{};const r=st.lastSyncResult||null;
+  const when=r&&r.at?new Date(r.at).toLocaleString('he-IL',{dateStyle:'short',timeStyle:'short'}):'';
+  let status='';
+  if(!st.hasIcs)status='<span class="pill warn">היומן לא מחובר עדיין</span>';
+  else if(r&&r.ok)status=`<span class="pill ok">מסונכרן</span> <span class="muted">${esc(when)} · ${n(r.events)} סדנאות ביומן${r.created?` · ${n(r.created)} חדשות`:''}${r.updated?` · ${n(r.updated)} עודכנו`:''}</span>`;
+  else if(r)status=`<span class="pill bad">הסנכרון נכשל</span> <span class="muted">${esc(when)} · בדקי שהכתובת נכונה</span>`;
+  v.innerHTML=`<div class="settings">
+   <section><h2>סנכרון עם יומן Google</h2><div>${status}</div>
+    <p class="muted" style="margin:0">כל אירוע ביומן שיש בכותרת שלו "סדנה" או "סדנת" נכנס ללוח לבד, עם צ'קליסט. אם משנים ביומן תאריך או שעה, זה מתעדכן גם כאן. הסנכרון רץ בכל פעם שהלוח נפתח, ופעם ביום גם בלי לפתוח.</p>
+    ${st.hasIcs?'<div class="row"><button class="btn" type="button" id="syncNow">סנכרון עכשיו</button></div>':''}
+    <details ${st.hasIcs?'':'open'}><summary class="muted" style="cursor:pointer">${st.hasIcs?'החלפת כתובת היומן':'חיבור היומן (פעם אחת)'}</summary>
+     <ol class="muted" style="margin-top:8px"><li>פותחים את Google Calendar במחשב ← גלגל השיניים ← הגדרות.</li><li>בצד שמאל לוחצים על שם היומן שלך (תחת "הגדרות של היומנים שלי").</li><li>גוללים ל"כתובת סודית בפורמט iCal" ומעתיקים אותה.</li><li>מדביקים כאן ושומרים.</li></ol>
+     <form id="icsForm" class="row" style="margin-top:8px"><input type="text" id="icsUrl" dir="ltr" placeholder="https://calendar.google.com/calendar/ical/.../basic.ics" style="flex:1;min-width:220px"><button class="btn primary" type="submit">שמירה וסנכרון</button></form>
+    </details></section>
+   <section><h2>חשבון</h2><p class="muted" style="margin:0">כולם נכנסים עם אותה סיסמה. כדי להחליף אותה משנים את SADNAOT_PASSWORD ב־Vercel, וכולם יתבקשו להיכנס מחדש.</p><div class="row"><button class="btn" type="button" id="logoutBtn">יציאה</button></div></section>
+  </div>`;
+  const sn=$('#syncNow');if(sn)sn.onclick=async()=>{sn.disabled=true;sn.textContent='מסנכרן…';try{const j=await post('sync',{});toast(j.ok?'סונכרן':'הסנכרון נכשל');}catch(e){toast('הסנכרון נכשל')}await refresh();};
+  $('#icsForm').onsubmit=async e=>{e.preventDefault();const u=$('#icsUrl').value.trim();
+    if(!/^https:\/\/calendar\.google\.com\/calendar\/ical\/.+\.ics$/.test(u)){toast('הכתובת צריכה להתחיל ב-https://calendar.google.com/calendar/ical/ ולהסתיים ב-.ics');return}
+    try{const j=await post('settings',{icsUrl:u});toast(j.ok?`היומן חובר · ${n(j.created)} סדנאות חדשות`:'הכתובת נשמרה אבל הסנכרון נכשל');}catch(e){toast('השמירה נכשלה')}
+    pendingRender=false;await refresh();};
+  $('#logoutBtn').onclick=async()=>{try{await post('logout',{})}catch(_){}location.reload()};
+}
+
+/* ---------- events ---------- */
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;S.tab=b.dataset.tab;try{localStorage.setItem('lw-tab',S.tab)}catch(_){}pendingRender=false;render()});
+$('#view').addEventListener('click',e=>{const o=e.target.closest('[data-open]');if(o){openDialog(o.dataset.open);return}
+  const f=e.target.closest('[data-filter]');if(f){S.filter=f.dataset.filter;render();return}
+  const h=e.target.closest('[data-hz]');if(h){S.horizon=n(h.dataset.hz);render()}});
+$('#newBtn').onclick=()=>{if(!db){toast('המערכת עדיין לא מחוברת');return}openDialog(null)};
+try{const t=localStorage.getItem('lw-tab');if(t&&['workshops','shopping','inventory','types','settings'].includes(t))S.tab=t}catch(_){}
+
+/* ---------- data (server API) ---------- */
+const API='/api/';
+const listeners={workshops:[],inventory:[],types:[]};
+let latest=null, refreshing=null;
+function snapOf(arr){return {docs:arr.map(d=>({id:d.id,exists:true,data:()=>{const o=Object.assign({},d);delete o.id;return o}})),metadata:{fromCache:false,hasPendingWrites:false}}}
+function showLogin(msg){$('#login').hidden=false;$('#loginErr').textContent=msg||'';setTimeout(()=>$('#pw').focus(),50)}
+async function refresh(){
+  if(refreshing)return refreshing;
+  refreshing=(async()=>{
+    let r;try{r=await fetch(API+'data',{cache:'no-store',credentials:'same-origin'})}catch(e){const bn=$('#banner');bn.hidden=false;bn.textContent='אין חיבור לשרת כרגע. הנתונים יתעדכנו כשהחיבור יחזור.';return}
+    if(r.status===401){showLogin();return}
+    if(r.status===503){showLogin('המערכת עוד לא הוגדרה: צריך לקבוע סיסמה ב-Vercel.');return}
+    if(!r.ok){const bn=$('#banner');bn.hidden=false;bn.textContent='שגיאה בטעינת הנתונים. נסי לרענן.';return}
+    const j=await r.json();latest=j;S.settings=j.settings||{};$('#banner').hidden=true;$('#login').hidden=true;
+    for(const k in listeners)listeners[k].forEach(cb=>cb(snapOf(j[k]||[])));
+  })();
+  try{await refreshing}finally{refreshing=null}
+}
+async function post(action,body){
+  const r=await fetch(API+action,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),credentials:'same-origin'});
+  if(r.status===401){showLogin();throw {code:'login'}}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw {code:j.error||'error'};return j;
+}
+let queue=Promise.resolve(), rt=null;
+function scheduleRefresh(){clearTimeout(rt);rt=setTimeout(refresh,120)}
+function writeOp(op,col,id,data){const p=queue.then(()=>post('write',{ops:[{op,col,id,data}]}));queue=p.catch(()=>{});p.then(scheduleRefresh,scheduleRefresh);return p}
+const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+db={collection(name){const col={
+  onSnapshot(cb){listeners[name].push(cb);if(latest)cb(snapOf(latest[name]||[]));return()=>{listeners[name]=listeners[name].filter(x=>x!==cb)}},
+  doc(id){id=id||rid();return {id,set:d=>writeOp('set',name,id,d),update:d=>writeOp('update',name,id,d),delete:()=>writeOp('delete',name,id)}},
+  add:async d=>{const r=col.doc();await r.set(d);return r}};return col}};
+['workshops','inventory','types'].forEach(name=>db.collection(name).onSnapshot(snap=>{
+  S[name==='inventory'?'items':name]=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+  S.loaded[name==='workshops'?'w':name==='inventory'?'i':'t']=true;render()}));
+$('#loginForm').onsubmit=async e=>{e.preventDefault();const pw=$('#pw').value;$('#loginErr').textContent='';
+  try{const r=await fetch(API+'login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:pw}),credentials:'same-origin'});
+    if(r.status===401){$('#loginErr').textContent='הסיסמה לא נכונה';return}
+    if(r.status===429){$('#loginErr').textContent='יותר מדי ניסיונות. נסי שוב בעוד כמה דקות.';return}
+    if(r.status===503){$('#loginErr').textContent='המערכת עוד לא הוגדרה: צריך לקבוע סיסמה ב-Vercel.';return}
+    if(!r.ok){$('#loginErr').textContent='משהו השתבש. נסי שוב.';return}
+    $('#pw').value='';$('#login').hidden=true;await refresh();
+  }catch(_){$('#loginErr').textContent='אין חיבור לשרת'}};
+setInterval(()=>{if(document.visibilityState==='visible'&&!$('#login').hidden===false)refresh()},20000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
+refresh();
+})();
+</script>
+</body>
+</html>
